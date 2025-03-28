@@ -1,0 +1,30 @@
+{
+  "name": "booking",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsc-watch --onSuccess \"npm start dev\" ",
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "Shakir Farhan",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.1",
+    "prisma": "^6.3.1",
+    "tsc-watch": "^6.2.1",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "pino": "^9.6.0",
+    "pino-http": "^10.4.0",
+    "pino-pretty": "^13.0.0",
+    "zod": "^3.24.1"
+  }
+}

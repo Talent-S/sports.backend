@@ -1,0 +1,36 @@
+services:
+  user-service:
+    image: shakirfarhan/sports-user-service:latest
+    container_name: sports-user-service
+    restart: always
+    ports:
+      - 8001:8001
+    env_file:
+      - ./.env
+    depends_on:
+      - user_service_db
+    networks:
+      - app-network
+  user_service_db:
+    image: postgres:15-alpine
+    ports:
+      - '5433:5432'
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: user_service
+    volumes:
+      - user-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  user-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

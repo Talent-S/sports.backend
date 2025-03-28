@@ -1,0 +1,37 @@
+services:
+  # booking-service:
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '3000:3000'
+  #   environment:
+  #     NODE_ENV: production
+  #     DATABASE_URL: ${DATABASE_URL}
+  #   depends_on:
+  #     - booking_service_db
+  #   networks:
+  #     - app-network
+  booking_service_db:
+    image: postgres:15-alpine
+    ports:
+      - '5435:5432'
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: booking_service
+    volumes:
+      - booking-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  booking-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,37 @@
+{
+  "name": "user",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsc-watch --onSuccess \"npm start dev\" ",
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "Shakir Farhan",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.723.0",
+    "@prisma/client": "^6.2.1",
+    "axios": "^1.7.9",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "pino": "^9.6.0",
+    "pino-http": "^10.3.0",
+    "pino-pretty": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.10.5",
+    "prisma": "^6.2.1",
+    "tsc-watch": "^6.2.1",
+    "typescript": "^5.7.3"
+  }
+}

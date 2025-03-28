@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ACTIVE
+  CANCELED
+  EXPIRED
+  PENDING
+}
+model Feature {
+  id String @id @default(uuid())
+  name String @unique
+  description String?
+  planFeatures PlanFeature[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@map("features")
+}
+
+enum PlanInterval {
+  day 
+  week 
+  month
+  year
+  one_time
+}
+model Plan {
+  id String @id @default(uuid())
+  name String @unique
+  price Float
+  interval PlanInterval
+  description String?
+  stripePriceId String @unique @map("stripe_price_id")
+  stripeProductId String @unique @map("stripe_product_id")
+  features PlanFeature[]
+  subscriptions Subscription[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@map("plans")
+}
+model PlanFeature {
+  id String @id @default(uuid())
+  planId String @map("plan_id")
+  plan Plan @relation(fields: [planId], references: [id])
+  featureId String @map("feature_id")
+  feature Feature @relation(references: [id], fields: [featureId])
+  value String // The value for this feature (e.g., "3", "UNLIMITED")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@map("plan_features")
+}
+model Subscription {
+  id String @id @default(uuid())
+  planId String @map("plan_id")
+  plan Plan @relation(references: [id], fields: [planId])
+  userId String @unique @map("user_id")
+  status Status
+  stripeId String @unique @map("stripe_id")
+  startDate DateTime @map("start_date")
+  endDate DateTime @map("end_date")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@map("subscriptions")
+}

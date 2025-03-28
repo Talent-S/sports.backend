@@ -1,0 +1,61 @@
+services:
+  auth:
+    build:
+      dockerfile: Dockerfile
+      context: ./auth
+    container_name: auth
+    ports:
+      - '8000:8000'
+    restart: always
+    env_file:
+      - ./auth/.env # Load user service environment variables
+    # volumes:
+    # - .:/app
+    # - /app/auth/node_modules
+  user:
+    build:
+      dockerfile: Dockerfile
+      context: ./user
+    container_name: user
+    ports:
+      - '8001:8001'
+    restart: always
+    env_file:
+      - ./user/.env
+    # volumes:
+    # - .:/app
+    # - /app/user/node_modules
+  # booking:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ../../services/booking
+  #   container_name: booking
+  #   ports:
+  #     - '8003:8003'
+  #   restart: always
+  #   volumes:
+  #     - .:/app
+  #     - /app/booking/node_modules
+  # subscription:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ../../services/subscription
+  #   container_name: subscription
+  #   ports:
+  #     - '8002:8002'
+  #   restart: always
+  #   volumes:
+  #     - .:/app
+  #     - /app/subscription/node_modules
+
+  nginx-proxy:
+    build:
+      dockerfile: Dockerfile
+      context: ./proxy
+    ports:
+      - '80:80'
+    depends_on:
+      - auth
+      - user
+      # - booking
+      # - subscription
