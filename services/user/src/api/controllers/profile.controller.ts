@@ -19,15 +19,11 @@ const createProfile = async (
     return;
   }
   const DtoClass = roleToDtoMap[role as Role];
-  console.log(DtoClass);
   if (!DtoClass) {
     res.status(400).json({ error: 'No DTO defined for this role' });
     return;
   }
   const { errors, input } = await RequestValidator(DtoClass, profileData);
-  console.log('HERE');
-  console.log(errors);
-  console.log(input);
   if (errors) {
     res.status(400).json({ error: errors });
     return;
@@ -59,8 +55,21 @@ const updateProfile = async (
     return next(error);
   }
 };
-
+const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+  const { username } = req.params;
+  if (!username) {
+    res.status(400).json({ error: 'Missing username' });
+    return;
+  }
+  try {
+    const user = await profileService.getProfile(username);
+    res.status(200).json(user);
+  } catch (error) {
+    return next(error);
+  }
+};
 export const profileController = {
   createProfile,
   updateProfile,
+  getProfile,
 };

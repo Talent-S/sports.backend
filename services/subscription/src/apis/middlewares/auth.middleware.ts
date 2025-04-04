@@ -23,7 +23,7 @@ export const userAuthorizer = async (
     req.user = user;
     next();
   } catch (error) {
-    console.error('Authentication Error:');
+    console.error('Authentication Error:', error);
     res.status(401).json({ error: 'Invalid or expired token' });
   }
 };

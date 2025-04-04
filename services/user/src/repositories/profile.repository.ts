@@ -23,7 +23,9 @@ export class UserProfileRepository implements UserProfileRepoInterface {
     });
   }
   async findProfileById(userId: string): Promise<UserProfile | null> {
-    return await this._prisma.userProfile.findUnique({ where: { id: userId } });
+    return await this._prisma.userProfile.findUnique({
+      where: { id: userId },
+    });
   }
   async findProfiles(limit: number, page: number): Promise<UserProfile[]> {
     return this._prisma.userProfile.findMany({
@@ -34,6 +36,16 @@ export class UserProfileRepository implements UserProfileRepoInterface {
   async findProfileByMobile(mobile: string): Promise<UserProfile | null> {
     return await this._prisma.userProfile.findUnique({
       where: { mobileNumber: mobile },
+    });
+  }
+  async findProfileByUsername(username: string) {
+    return await this._prisma.userProfile.findUnique({
+      where: { username },
+      include: {
+        uploads: true,
+        documents: true,
+        services: true,
+      },
     });
   }
 }

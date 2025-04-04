@@ -30,6 +30,7 @@ model UserProfile {
   firstName String @map("first_name")
   lastName String @map("last_name")
   mobileNumber String @unique @map("mobile_number")
+  username String @unique
   photo String?
   gender Gender?
   age Int?
@@ -51,7 +52,7 @@ model UserProfile {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   uploads Media[]
-  achievements Achievement[]
+  documents Document[]
 }
 
 model Media {
@@ -68,12 +69,17 @@ enum MediaType {
   photo 
   video
 }
-model Achievement {
+enum DocumentType {
+  certificate
+  award
+}
+model Document {
   id String @id @default(uuid())
   title String
   issuedBy String @map("issued_by")
-  issuedDate DateTime? @map("issued_date") 
-  url String?
+  issuedDate String? @map("issued_date") 
+  imageUrl String? @map("image_url")
+  type DocumentType
   description String?
   userId String @map("user_id")
   user UserProfile @relation(fields: [userId],references: [id])

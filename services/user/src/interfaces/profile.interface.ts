@@ -23,4 +23,5 @@ export interface UserProfileRepoInterface {
   findProfileById(userId: string): Promise<UserProfile | null>;
   findProfiles(limit: number, page: number): Promise<UserProfile[]>;
   findProfileByMobile(mobile: string): Promise<UserProfile | null>;
+  findProfileByUsername(username: string): Promise<UserProfile | null>;
 }

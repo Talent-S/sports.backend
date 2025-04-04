@@ -37,7 +37,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
         mobileNumber,
         role,
       });
-      console.log('HERE 2');
       // Need to pass to the broker
       await authService.sendOtp(email);
     } catch (error) {
@@ -105,6 +104,7 @@ const validateToken = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log('here');
   const authHeaders = req.headers['authorization'];
   try {
     if (!authHeaders) throw new ValidationError('Unauthorized');

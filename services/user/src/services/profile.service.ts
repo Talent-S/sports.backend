@@ -23,7 +23,9 @@ export class ProfileService {
       );
       if (numberExist) throw new ConflictError('Mobile number already exists');
     }
-    const result = await this._repo.createProfile({ ...data, role });
+    const username =
+      data.firstName.toLowerCase() + '_' + data.lastName.toLowerCase();
+    const result = await this._repo.createProfile({ ...data, role, username });
     if (!result) throw new APIError('Internal Server Error');
     return result;
   }
@@ -35,6 +37,12 @@ export class ProfileService {
       data.role = userExist.role;
     }
     const user = await this._repo.updateProfile({ ...data, id: userId });
+    return user;
+  }
+  async getProfile(username: string) {
+    if (!username) throw new ValidationError('Missing username');
+    const user = await this._repo.findProfileByUsername(username);
+    if (!user) throw new NotFoundError('User Profile not found!');
     return user;
   }
 }

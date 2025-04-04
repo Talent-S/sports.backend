@@ -11,15 +11,15 @@ class AuthClient {
   }
   async validateUser(token: string) {
     try {
-      const { data } = await this.client.get('/validate', {
+      const response = await this.client.get('/validate', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!data || !data.id) {
+      if (!response.data || !response.data.id) {
         throw new ValidationError('Unable to validate');
       }
-      return data;
+      return response.data;
     } catch (error) {
       console.log('ERROR in validate user');
       throw new APIError(error);

@@ -15,14 +15,14 @@ class UserProfileClient {
       if (input.role) {
         delete input.role;
       }
-      const { data } = await this.client.post('/profile', {
+      const response = await this.client.post('/profile', {
         role,
         profileData: input,
       });
-      if (!data || !data.user) {
+      if (!response.data || !response.data.user) {
         throw new ValidationError('Unable to create');
       }
-      return data;
+      return response.data;
     } catch (error) {
       logger.error('Error in User Client', error);
       throw new APIError(error);

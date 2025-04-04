@@ -23,7 +23,7 @@ const startApp = async () => {
   });
   // Routes
   app.use('/api/v1/user', profileRoutes);
-  app.use('/api/v1/user/media', mediaRoutes);
+  app.use('/api/v1/user', mediaRoutes);
   // Error Handler
   app.use(HandleErrorWithLogger as unknown as ErrorRequestHandler);
   app.listen(PORT, () => {
