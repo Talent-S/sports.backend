@@ -10,6 +10,7 @@ const uploadMedia = async (req: Request, res: Response, next: NextFunction) => {
       res.status(400).json({ error: 'Missing title or file or type' });
       return;
     }
+
     const userId = req.user!.id;
     const media = await mediaService.uploadMedia(userId, { title, file, type });
     res.status(201).json(media);

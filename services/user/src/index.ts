@@ -4,6 +4,8 @@ import { httpLogger, logger } from './utils/logger';
 import cors from 'cors';
 import config from './config';
 import profileRoutes from './api/routes/profile.route';
+import mediaRoutes from './api/routes/media.route';
+
 const app = express();
 const PORT = config.PORT || 8002;
 const startApp = async () => {
@@ -21,6 +23,7 @@ const startApp = async () => {
   });
   // Routes
   app.use('/api/v1/user', profileRoutes);
+  app.use('/api/v1/user/media', mediaRoutes);
   // Error Handler
   app.use(HandleErrorWithLogger as unknown as ErrorRequestHandler);
   app.listen(PORT, () => {

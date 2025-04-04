@@ -24,7 +24,7 @@ export class MediaService {
     if (!userId || !data) throw new ValidationError('Missing userId or data');
     const { title, file, type } = data;
     if (!title || !file) throw new ValidationError('Missing title or file');
-    const key = `${userId}/media/${file.originalname}`;
+    const key = `/media/${userId}/${Date.now().toString()}`;
     const url = await uploadToS3(file, key);
     return await this._repo.createMedia({ userId, title, url, type });
   }
