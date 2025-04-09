@@ -3,7 +3,10 @@ import { Request, Response, NextFunction } from 'express';
 import { RequestValidator, roleToDtoMap } from '../../utils/error/validator';
 import { ProfileService } from '../../services/profile.service';
 import { UserProfileRepository } from '../../repositories/profile.repository';
+import { ExpertService } from '../../services/expservice.service';
+import { ExpertServiceRepo } from '../../repositories/expservice.repository';
 const profileService = new ProfileService(new UserProfileRepository());
+const expertServiceService = new ExpertService(new ExpertServiceRepo());
 const createProfile = async (
   req: Request,
   res: Response,
@@ -68,8 +71,114 @@ const getProfile = async (req: Request, res: Response, next: NextFunction) => {
     return next(error);
   }
 };
+
+// Services
+
+// Fetching Platform services(recorded assessment,...)
+const getServices = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const services = await expertServiceService.getPlatformServices();
+    res.status(200).json(services);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const addExpService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { serviceId } = req.params;
+  const { price, additionalDetails } = req.body;
+  if (!price) {
+    res.status(400).json({ error: 'Missing price' });
+    return;
+  }
+  if (!serviceId) {
+    res.status(400).json({ error: 'Missing serviceId' });
+    return;
+  }
+  try {
+    const service = await expertServiceService.addExpService(req.user!.id, {
+      serviceId,
+      price,
+      additionalDetails,
+    });
+    res.status(200).json(service);
+  } catch (error) {
+    return next(error);
+  }
+};
+const updateExpService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { serviceId } = req.params;
+  const { price, additionalDetails } = req.body;
+  if (!serviceId) {
+    res.status(400).json({ error: 'Missing service id' });
+    return;
+  }
+  try {
+    const service = await expertServiceService.updateExpService(
+      req.user!.id,
+      serviceId,
+      {
+        price,
+        additionalDetails,
+      }
+    );
+    res.status(200).json(service);
+  } catch (error) {
+    return next(error);
+  }
+};
+const deleteExpService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { serviceId } = req.params;
+  if (!serviceId) {
+    res.status(400).json({ error: 'Missing service id' });
+    return;
+  }
+  try {
+    const service = await expertServiceService.deleteExpService(
+      req.user!.id,
+      serviceId
+    );
+    res.status(200).json(service);
+  } catch (error) {
+    return next(error);
+  }
+};
+const expertServices = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { expertId } = req.params;
+  if (!expertId) {
+    res.status(400).json({ error: 'Missing expert id' });
+    return;
+  }
+  try {
+    const services = await expertServiceService.expertServices(expertId);
+    res.status(200).json(services);
+  } catch (error) {
+    return next(error);
+  }
+};
 export const profileController = {
+  getServices,
   createProfile,
   updateProfile,
   getProfile,
+  addExpService,
+  updateExpService,
+  deleteExpService,
+  expertServices,
 };

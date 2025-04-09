@@ -1,9 +1,11 @@
 import { ExpertService, Service } from '@prisma/client';
 
-export type expertServicePayload = Pick<
+export type expertServicePayload = Omit<
   ExpertService,
-  'id' | 'createdAt' | 'updatedAt'
->;
+  'id' | 'createdAt' | 'updatedAt' | 'additionalDetails'
+> & {
+  additionalDetails?: object;
+};
 export interface ExpertServiceInterface {
   // Admin Only
   addService(name: string, description: string): Promise<Service>;
@@ -18,11 +20,15 @@ export interface ExpertServiceInterface {
   createExpertService(data: expertServicePayload): Promise<ExpertService>;
   updateExpertService(
     id: string,
-    data: expertServicePayload
+    data: Partial<expertServicePayload>
   ): Promise<ExpertService>;
   expertServices(): Promise<ExpertService[]>;
   expertServiceById(id: string): Promise<ExpertService | null>;
   expertServiceByServiceId(serviceId: string): Promise<ExpertService | null>;
-  expertServiceByExpertId(expertId: string): Promise<ExpertService | null>;
+  expertServicesByExpertId(expertId: string): Promise<ExpertService[] | null>;
+  expertServiceByIds(
+    expertId: string,
+    serviceId: string
+  ): Promise<ExpertService | null>;
   deleteExpertService(id: string): Promise<ExpertService>;
 }

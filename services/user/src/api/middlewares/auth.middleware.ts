@@ -28,13 +28,32 @@ export const userAuthorizer = async (
 
 export const authorizePermissions = (requiredPermissions: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.user);
     const userPermissions = req.user?.permissions;
+
     if (!userPermissions || userPermissions.length < 1) {
       throw new UnauthorizedError('Access Denied. Missing Permissions!');
     }
     const hasPermissions = requiredPermissions.every((per) =>
       userPermissions.includes(per)
     );
+    if (!hasPermissions) {
+      throw new UnauthorizedError('Access Denied, Missing Permissions');
+    }
+    next();
+  };
+};
+
+export const authorizeRole = (roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.user);
+    const userRole = req.user?.role;
+    console.log('HEYY');
+    console.log(userRole);
+    if (!userRole || userRole === null) {
+      throw new UnauthorizedError('Access Denied. Missing Permissions!');
+    }
+    const hasPermissions = roles.includes(userRole);
     if (!hasPermissions) {
       throw new UnauthorizedError('Access Denied, Missing Permissions');
     }
