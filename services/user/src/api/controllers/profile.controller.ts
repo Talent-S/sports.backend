@@ -172,13 +172,61 @@ const expertServices = async (
     return next(error);
   }
 };
+
+const getProfiles = async (req: Request, res: Response, next: NextFunction) => {
+  const { page, limit, userType } = req.query;
+  if (!page || !limit || !userType) {
+    res.status(400).json({ error: 'Missing page, limit or userType' });
+    return;
+  }
+  if (!Object.values(Role).includes(userType as Role)) {
+    res.status(400).json({ error: 'Invalid userType' });
+    return;
+  }
+  if (req.user?.role !== Role.admin) {
+    if (userType === 'admin') {
+      res.status(403).json({ error: 'Forbidden' });
+      return;
+    }
+  }
+
+  try {
+    const users = await profileService.getProfiles(
+      Number(page),
+      Number(limit),
+      userType as Role
+    );
+    res.status(200).json(users);
+  } catch (error) {
+    return next(error);
+  }
+};
+const updateProfilePhoto = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { file } = req;
+  if (!file) {
+    res.status(400).json({ error: 'Missing file' });
+    return;
+  }
+  try {
+    const user = await profileService.updateProfilePhoto(req.user!.id, file);
+    res.status(200).json(user);
+  } catch (error) {
+    return next(error);
+  }
+};
 export const profileController = {
   getServices,
   createProfile,
   updateProfile,
-  getProfile,
   addExpService,
   updateExpService,
   deleteExpService,
   expertServices,
+  getProfiles,
+  getProfile,
+  updateProfilePhoto,
 };

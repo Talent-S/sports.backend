@@ -9,6 +9,12 @@ import {
   NotFoundError,
   ValidationError,
 } from '../utils/error';
+import {
+  deleteFileFromS3,
+  File,
+  getS3ObjectKey,
+  uploadToS3,
+} from '../utils/aws';
 export class ProfileService {
   private _repo: UserProfileRepoInterface;
   constructor(repo: UserProfileRepoInterface) {
@@ -36,13 +42,35 @@ export class ProfileService {
     if (data.role) {
       data.role = userExist.role;
     }
-    const user = await this._repo.updateProfile({ ...data, id: userId });
+    const user = await this._repo.updateProfile(userId, data);
     return user;
+  }
+
+  async updateProfilePhoto(userId: string, file: File) {
+    if (!userId || !file) throw new ValidationError('Missing userId or file');
+    const user = await this._repo.findProfileById(userId);
+    if (!user) throw new NotFoundError('User Profile not found!');
+    if (user.photo) {
+      const s3Key = getS3ObjectKey(user.photo);
+      if (s3Key) {
+        await deleteFileFromS3(s3Key);
+      }
+    }
+    const key = `/media/${userId}/${Date.now().toString()}`;
+    const url = await uploadToS3(file, key);
+    return await this._repo.updateProfile(userId, { photo: url });
   }
   async getProfile(username: string) {
     if (!username) throw new ValidationError('Missing username');
     const user = await this._repo.findProfileByUsername(username);
     if (!user) throw new NotFoundError('User Profile not found!');
     return user;
+  }
+  async getProfiles(page: number, limit: number, userType: Role) {
+    if (!page || !limit || !userType)
+      throw new ValidationError('Missing page, limit or userType');
+    const users = await this._repo.findProfiles(limit, page, userType);
+    if (!users) throw new NotFoundError('No users found!');
+    return users;
   }
 }

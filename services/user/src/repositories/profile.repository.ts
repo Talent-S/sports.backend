@@ -1,4 +1,4 @@
-import { PrismaClient, UserProfile } from '@prisma/client';
+import { PrismaClient, Role, UserProfile } from '@prisma/client';
 import {
   UserProfilePayload,
   UserProfileRepoInterface,
@@ -14,10 +14,13 @@ export class UserProfileRepository implements UserProfileRepoInterface {
       data,
     });
   }
-  async updateProfile(data: UserProfilePayload): Promise<UserProfile> {
+  async updateProfile(
+    id: string,
+    data: Partial<Omit<UserProfilePayload, 'id'>>
+  ): Promise<UserProfile> {
     return await this._prisma.userProfile.update({
       where: {
-        id: data.id,
+        id,
       },
       data,
     });
@@ -27,11 +30,27 @@ export class UserProfileRepository implements UserProfileRepoInterface {
       where: { id: userId },
     });
   }
-  async findProfiles(limit: number, page: number): Promise<UserProfile[]> {
-    return this._prisma.userProfile.findMany({
+  async findProfiles(
+    limit: number,
+    page: number,
+    userType: Role
+  ): Promise<{ users: UserProfile[]; page: number; totalPages: number }> {
+    const users = await this._prisma.userProfile.findMany({
+      where: {
+        role: userType,
+      },
       take: limit,
       skip: (page - 1) * limit,
     });
+    const totalPages = Math.ceil(
+      (await this._prisma.userProfile.count({ where: { role: userType } })) /
+        limit
+    );
+    return {
+      users,
+      page,
+      totalPages,
+    };
   }
   async findProfileByMobile(mobile: string): Promise<UserProfile | null> {
     return await this._prisma.userProfile.findUnique({

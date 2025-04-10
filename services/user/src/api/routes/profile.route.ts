@@ -6,10 +6,18 @@ import {
   userAuthorizer,
 } from '../middlewares/auth.middleware';
 import { PERMISSIONS } from '../../config/permissions';
+import { upload } from '../../utils/multer';
 const router = express.Router();
 router.post('/profile', profileController.createProfile);
 router.patch('/profile', userAuthorizer, profileController.updateProfile);
 router.get('/profile/:username', userAuthorizer, profileController.getProfile);
+router.patch(
+  '/profile/photo',
+  userAuthorizer,
+  upload.single('photo'),
+  profileController.updateProfilePhoto
+);
+router.get('/profiles', userAuthorizer, profileController.getProfiles);
 router.get(
   '/profile/expert/:expertId/services',
   userAuthorizer,
