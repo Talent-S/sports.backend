@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsc-watch --onSuccess \"npm start dev\" ",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Shakir Farhan",
@@ -26,9 +27,11 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.5",
     "@types/nodemailer": "^6.4.17",
+    "jest": "^29.7.0",
     "prisma": "^6.1.0",
     "tsc-watch": "^6.2.1",
     "typescript": "^5.7.2"
