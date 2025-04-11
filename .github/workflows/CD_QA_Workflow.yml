@@ -21,8 +21,10 @@ jobs:
         run: echo "${{ secrets.USER_SERVICE_ENV }}" > .env
 
       - name: 🧰 Generate deployment package
-        run: zip -r deploy.zip services/* -x '*.git*'
-
+        run: |
+          cd services
+          zip -r ../deploy.zip * -x '*.git*'
+          
       - name: 🚀 Deploy to Elastic Beanstalk QA
         uses: einaregilsson/beanstalk-deploy@v20
         with:
