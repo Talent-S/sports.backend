@@ -32,6 +32,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: "talentz.backend"          
           environment_name: "Talentzbackend-env"        
-          version_label: "ver-${{ github.sha }}"
+          version_label: "ver-${{ github.run_id }}-${{ github.sha }}"
           region: "ap-south-1"
           deployment_package: "deploy.zip"
