@@ -1,0 +1,35 @@
+name: Deploy on QA
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy_on_qa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout source code
+        uses: actions/checkout@v2
+
+      - name: 🛠️ Write .env for Auth service
+        working-directory: ./services/auth
+        run: echo "${{ secrets.AUTH_SERVICE_ENV }}" > .env
+
+      - name: 🛠️ Write .env for User service
+        working-directory: ./services/user
+        run: echo "${{ secrets.USER_SERVICE_ENV }}" > .env
+
+      - name: 🧰 Generate deployment package
+        run: zip -r deploy.zip services -x '*.git*'
+
+      - name: 🚀 Deploy to Elastic Beanstalk QA
+        uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: "talentz.backend"          
+          environment_name: "Talentzbackend-env"        
+          version_label: "ver-${{ github.sha }}"
+          region: "ap-south-1"
+          deployment_package: "deploy.zip"
