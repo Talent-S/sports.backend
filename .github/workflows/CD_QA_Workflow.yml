@@ -2,7 +2,7 @@ name: Deploy on QA
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   deploy_on_qa:
@@ -24,14 +24,14 @@ jobs:
         run: |
           cd services
           zip -r ../deploy.zip * -x '*.git*'
-          
+
       - name: 🚀 Deploy to Elastic Beanstalk QA
         uses: einaregilsson/beanstalk-deploy@v20
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: "talentz.backend.service"          
-          environment_name: "Talentzbackendservice-env"        
-          version_label: "v-${{ github.run_number }}-${{ github.run_attempt }}"
-          region: "ap-south-1"
-          deployment_package: "deploy.zip"
+          application_name: 'talentz.backend'
+          environment_name: 'Talentzbackend-env-1'
+          version_label: 'v-${{ github.run_number }}-${{ github.run_attempt }}'
+          region: 'ap-south-1'
+          deployment_package: 'deploy.zip'
