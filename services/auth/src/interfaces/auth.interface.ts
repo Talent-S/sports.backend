@@ -4,6 +4,7 @@ export type UserPayload = Pick<
   User,
   'email' | 'password' | 'salt' | 'verified' | 'roleId'
 >;
+
 export interface PopulatedUser extends User {
   role: PopulatedRole;
 }

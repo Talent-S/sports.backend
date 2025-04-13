@@ -12,6 +12,7 @@ export default {
   JWT_SECRET: process.env.JWT_SECRET,
   CLIENT_URL: process.env.CLIENT_URL,
   USER_SERVICE_URL: process.env.USER_SERVICE_URL,
+  RABBITMQ_URL: process.env.RABBITMQ_URL,
   MAILER: {
     GMAIL_USER: process.env.GMAIL_USER,
     GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,

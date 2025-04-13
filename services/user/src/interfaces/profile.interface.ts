@@ -10,6 +10,7 @@ interface AuthUserPayload {
   role: Role;
   permissions: string[];
 }
+
 declare global {
   namespace Express {
     interface Request {

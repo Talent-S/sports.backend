@@ -38,8 +38,6 @@ export class AuthService {
     const emailExist = await this._repo.findUserByEmail(email);
     if (emailExist) throw new ConflictError('Email already exists');
     const roleExist = await this._repo.findRoleByName(role);
-    console.log('ROLE EXIST');
-    console.log(roleExist);
     if (!roleExist)
       throw new ValidationError('Role is either invalid or not exists');
     const salt = generateSalt();
