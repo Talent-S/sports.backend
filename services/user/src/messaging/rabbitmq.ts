@@ -9,7 +9,7 @@ export const RPCObserver = async (
 ) => {
   const channel = await getChannel();
   await channel.assertQueue(RPC_QUEUE_NAME, {
-    durable: true,
+    durable: false,
   });
   channel.prefetch(1);
   channel.consume(

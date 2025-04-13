@@ -26,20 +26,13 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       email,
       password,
       role,
+      mobileNumber,
     });
     if (!message) {
       res.status(500).json({ error: 'Something went wrong' });
       return;
     }
     try {
-      // Traditional method
-      // await userProfileClient.createUserProfile(role, {
-      //   id: userId,
-      //   firstName,
-      //   lastName,
-      //   mobileNumber,
-      //   role,
-      // });
       // RPC method
       const response = await RPCRequest(RabbitMQQueues.USER_QUEUE, {
         type: RPCPayloadTypes.NEW_USER,
@@ -47,12 +40,10 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
           id: userId,
           firstName,
           lastName,
-          mobileNumber,
           role,
         },
       });
       console.log('RPC Response');
-
       console.log(response);
       // Need to pass to the broker
       await authService.sendOtp(email);

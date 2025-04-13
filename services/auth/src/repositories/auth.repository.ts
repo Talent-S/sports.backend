@@ -51,6 +51,11 @@ export class AuthRepository implements AuthRepositoryInterface {
       },
     });
   }
+  async findUserByMobileNumber(mobileNumber: string): Promise<User | null> {
+    return await this._prisma.user.findUnique({
+      where: { mobileNumber },
+    });
+  }
   async findRoleByName(name: string): Promise<PopulatedRole | null> {
     return await this._prisma.role.findUnique({
       where: {

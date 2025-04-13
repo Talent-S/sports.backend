@@ -29,14 +29,25 @@ export class AuthService {
     const { password, salt, ...rest } = user;
     return rest;
   }
-  async register(data: { email: string; password: string; role: string }) {
-    const { email, password, role } = data;
+  async register(data: {
+    email: string;
+    password: string;
+    role: string;
+    mobileNumber: string;
+  }) {
+    const { email, password, role, mobileNumber } = data;
     if (!email || !password) throw new ValidationError('Missing fields!');
     if (!isvalidEmail(email)) throw new ValidationError('Invalid Email');
     if (password.length < 8)
       throw new ValidationError('Password should be atleat 8 letters');
     const emailExist = await this._repo.findUserByEmail(email);
     if (emailExist) throw new ConflictError('Email already exists');
+    const mobileNumberExist = await this._repo.findUserByMobileNumber(
+      mobileNumber
+    );
+    if (mobileNumberExist) {
+      throw new ConflictError('Mobile Number already exists');
+    }
     const roleExist = await this._repo.findRoleByName(role);
     if (!roleExist)
       throw new ValidationError('Role is either invalid or not exists');
@@ -48,6 +59,7 @@ export class AuthService {
       salt,
       roleId: roleExist.id,
       verified: false,
+      mobileNumber,
     });
     if (!user) throw new APIError('Failed to create user');
     return {

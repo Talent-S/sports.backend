@@ -24,12 +24,6 @@ export class ProfileService {
 
   async createProfile(role: Role, data: UserProfilePayload) {
     if (!role || !data) throw new ValidationError('Missing Role and Data');
-    if (data.mobileNumber) {
-      const numberExist = await this._repo.findProfileByMobile(
-        data.mobileNumber
-      );
-      if (numberExist) throw new ConflictError('Mobile number already exists');
-    }
     const username =
       data.firstName.toLowerCase() + '_' + data.lastName.toLowerCase();
     const result = await this._repo.createProfile({ ...data, role, username });
