@@ -12,8 +12,8 @@ const createProfile = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { role, profileData } = req.body;
-  if (!role || !profileData) {
+  const { role } = req.body;
+  if (!role) {
     res.status(400).json({ error: 'Missing role or profile data' });
     return;
   }
@@ -26,7 +26,7 @@ const createProfile = async (
     res.status(400).json({ error: 'No DTO defined for this role' });
     return;
   }
-  const { errors, input } = await RequestValidator(DtoClass, profileData);
+  const { errors, input } = await RequestValidator(DtoClass, req.body);
   if (errors) {
     res.status(400).json({ error: errors });
     return;

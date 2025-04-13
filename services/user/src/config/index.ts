@@ -11,6 +11,7 @@ export default {
   DB: process.env.DATABASE_URL,
   CLIENT_URL: process.env.CLIENT_URL,
   AUTH_SERVICE_URL: process.env.AUTH_SERVICE_URL,
+  RABBITMQ_URL: process.env.RABBITMQ_URL,
   AWS: {
     REGION: process.env.AWS_REGION_APP,
     ACCESS_KEY: process.env.AWS_ACCESS_KEY_APP,

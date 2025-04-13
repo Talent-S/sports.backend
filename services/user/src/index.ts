@@ -5,7 +5,7 @@ import cors from 'cors';
 import config from './config';
 import profileRoutes from './api/routes/profile.route';
 import mediaRoutes from './api/routes/media.route';
-
+import { listenToObservers } from './messaging';
 const app = express();
 const PORT = config.PORT || 8002;
 const startApp = async () => {
@@ -13,7 +13,8 @@ const startApp = async () => {
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-
+  // RPC Observer
+  listenToObservers();
   // Logger
   app.use(httpLogger);
 

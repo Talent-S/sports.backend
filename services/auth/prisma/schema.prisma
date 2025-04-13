@@ -16,6 +16,7 @@ model User {
   id String @id @default(uuid())
   email String @unique
   password String
+  mobileNumber String @unique @map("mobile_number")
   salt String?
   roleId String 
   verified Boolean @default(false)

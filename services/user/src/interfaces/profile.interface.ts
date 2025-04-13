@@ -10,6 +10,7 @@ interface AuthUserPayload {
   role: Role;
   permissions: string[];
 }
+
 declare global {
   namespace Express {
     interface Request {
@@ -29,6 +30,5 @@ export interface UserProfileRepoInterface {
     page: number,
     userType: Role
   ): Promise<{ users: UserProfile[]; page: number; totalPages: number }>;
-  findProfileByMobile(mobile: string): Promise<UserProfile | null>;
   findProfileByUsername(username: string): Promise<UserProfile | null>;
 }

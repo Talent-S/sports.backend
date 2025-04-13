@@ -3,6 +3,7 @@ import {
   UserProfilePayload,
   UserProfileRepoInterface,
 } from '../interfaces/profile.interface';
+import { ProfileServiceRPCPayload } from '../interfaces';
 import {
   APIError,
   ConflictError,
@@ -23,12 +24,6 @@ export class ProfileService {
 
   async createProfile(role: Role, data: UserProfilePayload) {
     if (!role || !data) throw new ValidationError('Missing Role and Data');
-    if (data.mobileNumber) {
-      const numberExist = await this._repo.findProfileByMobile(
-        data.mobileNumber
-      );
-      if (numberExist) throw new ConflictError('Mobile number already exists');
-    }
     const username =
       data.firstName.toLowerCase() + '_' + data.lastName.toLowerCase();
     const result = await this._repo.createProfile({ ...data, role, username });
@@ -72,5 +67,16 @@ export class ProfileService {
     const users = await this._repo.findProfiles(limit, page, userType);
     if (!users) throw new NotFoundError('No users found!');
     return users;
+  }
+
+  async serveRPCRequest(payload: ProfileServiceRPCPayload) {
+    const { type, data } = payload;
+
+    switch (type) {
+      case 'NEW_USER':
+        return await this.createProfile(data.role, data);
+      default:
+        throw new ValidationError('Invalid RPC type');
+    }
   }
 }

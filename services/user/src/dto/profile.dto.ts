@@ -20,10 +20,6 @@ class BaseProfileDto {
   @IsString()
   lastName: string;
 
-  @IsNotEmpty()
-  @IsPhoneNumber()
-  mobileNumber: string;
-
   @IsOptional()
   @IsString()
   photo?: string;

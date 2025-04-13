@@ -4,6 +4,8 @@ import { AuthService } from '../services/auth.service';
 import { AuthRepository } from '../repositories/auth.repository';
 import { generateToken } from '../utils';
 import { userProfileClient } from './user.client';
+import { RPCRequest } from '../messaging/rabbitmq';
+import { RabbitMQQueues, RPCPayloadTypes } from '../interfaces';
 const authService = new AuthService(new AuthRepository());
 const register = async (req: Request, res: Response, next: NextFunction) => {
   const { role, email, password, mobileNumber, firstName, lastName } = req.body;
@@ -24,19 +26,25 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       email,
       password,
       role,
+      mobileNumber,
     });
     if (!message) {
       res.status(500).json({ error: 'Something went wrong' });
       return;
     }
     try {
-      await userProfileClient.createUserProfile(role, {
-        id: userId,
-        firstName,
-        lastName,
-        mobileNumber,
-        role,
+      // RPC method
+      const response = await RPCRequest(RabbitMQQueues.USER_QUEUE, {
+        type: RPCPayloadTypes.NEW_USER,
+        data: {
+          id: userId,
+          firstName,
+          lastName,
+          role,
+        },
       });
+      console.log('RPC Response');
+      console.log(response);
       // Need to pass to the broker
       await authService.sendOtp(email);
     } catch (error) {

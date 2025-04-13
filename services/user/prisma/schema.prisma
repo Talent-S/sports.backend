@@ -29,7 +29,6 @@ model UserProfile {
   id String @id @default(uuid()) // Matches the `id` in Auth Service's User table
   firstName String @map("first_name")
   lastName String @map("last_name")
-  mobileNumber String @unique @map("mobile_number")
   username String @unique
   photo String?
   gender Gender?

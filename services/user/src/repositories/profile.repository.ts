@@ -52,11 +52,7 @@ export class UserProfileRepository implements UserProfileRepoInterface {
       totalPages,
     };
   }
-  async findProfileByMobile(mobile: string): Promise<UserProfile | null> {
-    return await this._prisma.userProfile.findUnique({
-      where: { mobileNumber: mobile },
-    });
-  }
+
   async findProfileByUsername(username: string) {
     return await this._prisma.userProfile.findUnique({
       where: { username },
