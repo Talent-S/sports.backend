@@ -10,7 +10,27 @@ const app = express();
 const PORT = config.PORT || 8002;
 const startApp = async () => {
   // App Config
-  app.use(cors());
+  const allowedOrigins = [
+    'http://localhost:3000', // for local dev
+    config.CLIENT_URL,
+  ];
+
+  app.use(
+    cors({
+      origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      credentials: true, // Allow credentials (cookies, session data, etc.)
+    })
+  );
+
+  // Handle OPTIONS preflight requests
+  app.options('*', cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   // RPC Observer

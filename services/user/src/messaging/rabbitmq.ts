@@ -1,8 +1,12 @@
 import { getChannel } from '../config/rabbitmq';
 import { ProfileService } from '../services/profile.service';
 import { v4 as uuid } from 'uuid';
-
-// RPCObserver listens for messages on the specified RPC queue and processes them.
+/**
+ RPCObserver listens for messages on the specified RPC queue and processes them.
+ * @description RPC Observer for RabbitMQ
+ * @param RPC_QUEUE_NAME - The name of the queue to listen to
+ * @param service - The service instance to handle the request
+ */
 export const RPCObserver = async (
   RPC_QUEUE_NAME: string,
   service: ProfileService
@@ -17,7 +21,7 @@ export const RPCObserver = async (
     async (msg: any) => {
       if (msg.content) {
         const payload = JSON.parse(msg.content.toString());
-        console.log('Recived a Payload');
+        console.log('Recieved a Payload');
         console.log(payload);
         const response = await service.serveRPCRequest(payload);
         console.log('Got a response');
@@ -37,9 +41,16 @@ export const RPCObserver = async (
     }
   );
 };
+/**
+ To send a request to the RPC server, you can use the following function:
+ This function sends a request to the specified RPC queue and waits for a response.
 
-// To send a request to the RPC server, you can use the following function:
-// This function sends a request to the specified RPC queue and waits for a response.
+ * @description RPC request to RabbitMQ
+ * @param RPC_QUEUE_NAME - The name of the queue to send the request to
+ * @param requestPayload - The payload to send in the request
+ * @param uuid - The correlation ID for the request
+ * @returns The response from the RabbitMQ server
+ */
 const requestData = async (
   RPC_QUEUE_NAME: string,
   requestPayload: any,

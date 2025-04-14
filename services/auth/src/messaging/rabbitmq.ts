@@ -1,7 +1,16 @@
 import { getChannel } from '../config/rabbitmq';
 import { v4 as uuid } from 'uuid';
 import { RPCPayloadTypes } from '../interfaces';
+/**
+ To send a request to the RPC server, you can use the following function:
+ This function sends a request to the specified RPC queue and waits for a response.
 
+ * @description RPC request to RabbitMQ
+ * @param RPC_QUEUE_NAME - The name of the queue to send the request to
+ * @param requestPayload - The payload to send in the request
+ * @param uuid - The correlation ID for the request
+ * @returns The response from the RabbitMQ server
+ */
 const requestData = async (
   RPC_QUEUE_NAME: string,
   requestPayload: any,
