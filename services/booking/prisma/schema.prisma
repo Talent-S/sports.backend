@@ -14,24 +14,50 @@ datasource db {
 }
 
 enum BookingStatus {
-  PENDING
-  CONFIRMED
+  PENDING_PAYMENT
+  WAITING_EXPERT_APPROVAL
   ACCEPTED
-  CANCELLED 
+  REJECTED
+  RESCHEDULE_REQUESTED
+  SCHEDULED
   COMPLETED
-  RESCHEDULED
+  CANCELLED
+  EXPIRED
 }
 
+enum RescheduleStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
 model Booking {
   id String @id @default(uuid())
   playerId String @map("player_id")
   expertId String @map("expert_id")
+  serviceId String @map("service_id")
   status BookingStatus
   date DateTime
   startTime DateTime @map("start_time")
   endTime DateTime @map("end_time")
+  location String? // for in-person bookings
+  meetLink String? @map("meet_link") // for online bookings
+  recordedVideo String? @map("recorded_video") // for recorded video assessment(player will upload)
+  meetingRecording String? @map("meeting_recording") // // expert will upload the recorded online meet video
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  rescheduleRequests RescheduleRequest[]
   @@index([playerId])
   @@index([expertId])
+}
+model RescheduleRequest {
+  id String @id @default(uuid())
+  bookingId String @map("booking_id")
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  date DateTime
+  startTime DateTime @map("start_time")
+  endTime DateTime @map("end_time")
+  status BookingStatus
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@index([bookingId])
 }
