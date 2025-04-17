@@ -2,7 +2,13 @@ import { Role, User, Otp, RolePermission, ResetPassword } from '@prisma/client';
 
 export type UserPayload = Pick<
   User,
-  'email' | 'password' | 'salt' | 'verified' | 'roleId' | 'mobileNumber'
+  | 'email'
+  | 'password'
+  | 'salt'
+  | 'verified'
+  | 'roleId'
+  | 'mobileNumber'
+  | 'username'
 >;
 
 export interface PopulatedUser extends User {
@@ -15,6 +21,7 @@ export interface AuthRepositoryInterface {
   // User
   findUserById(userId: string): Promise<PopulatedUser | null>;
   findUserByEmail(email: string): Promise<PopulatedUser | null>;
+  findUserByUsername(username: string): Promise<User | null>;
   findUserByMobileNumber(mobileNumber: string): Promise<User | null>;
   create(data: UserPayload): Promise<User>;
   update(userId: string, data: Partial<UserPayload>): Promise<User | null>;

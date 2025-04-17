@@ -52,6 +52,9 @@ model UserProfile {
   updatedAt DateTime @updatedAt @map("updated_at")
   uploads Media[]
   documents Document[]
+  availability ExpertAvailability[]
+  availabilityBlocks AvailabilityBlock[]
+
 }
 
 model Media {
@@ -110,4 +113,27 @@ model ExpertService {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   @@unique([expertId, serviceId])
+}
+
+model ExpertAvailability {
+  id String @id @default(uuid())
+  expertId String @map("expert_id")
+  expert UserProfile @relation(fields: [expertId], references: [id])
+  dayOfWeek Int @map("day_of_week")
+  startTime DateTime @map("start_time")
+  endTime DateTime @map("end_time")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  @@index([expertId, dayOfWeek])
+}
+
+model AvailabilityBlock {
+  id String @id @default(uuid())
+  expertId String @map("expert_id")
+  expert UserProfile @relation(fields: [expertId], references: [id])
+  date DateTime
+  startTime DateTime? @map("start_time")
+  endTime DateTime? @map("end_time")
+  reason String?
+  createdAt DateTime @default(now()) @map("created_at")
 }

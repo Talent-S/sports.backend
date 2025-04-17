@@ -34,14 +34,17 @@ export class AuthService {
     password: string;
     role: string;
     mobileNumber: string;
+    username: string;
   }) {
-    const { email, password, role, mobileNumber } = data;
+    const { email, password, role, mobileNumber, username } = data;
     if (!email || !password) throw new ValidationError('Missing fields!');
     if (!isvalidEmail(email)) throw new ValidationError('Invalid Email');
     if (password.length < 8)
       throw new ValidationError('Password should be atleat 8 letters');
     const emailExist = await this._repo.findUserByEmail(email);
     if (emailExist) throw new ConflictError('Email already exists');
+    const usernameExist = await this._repo.findUserByUsername(username);
+    if (usernameExist) throw new ConflictError('Username already exists');
     const mobileNumberExist = await this._repo.findUserByMobileNumber(
       mobileNumber
     );
@@ -60,6 +63,7 @@ export class AuthService {
       roleId: roleExist.id,
       verified: false,
       mobileNumber,
+      username: data.username,
     });
     if (!user) throw new APIError('Failed to create user');
     return {
@@ -94,6 +98,7 @@ export class AuthService {
       id: userExists.id,
       email: userExists.email,
       role: userExists.role.name,
+      username: userExists.username,
     };
   }
   async verify(email: string, otp: number) {

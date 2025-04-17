@@ -24,8 +24,9 @@ export class ProfileService {
 
   async createProfile(role: Role, data: UserProfilePayload) {
     if (!role || !data) throw new ValidationError('Missing Role and Data');
-    const username =
-      data.firstName.toLowerCase() + '_' + data.lastName.toLowerCase();
+    // const username =
+    //   data.firstName.toLowerCase() + '_' + data.lastName.toLowerCase();
+    const username = data.username;
     const result = await this._repo.createProfile({ ...data, role, username });
     if (!result) throw new APIError('Internal Server Error');
     return result;

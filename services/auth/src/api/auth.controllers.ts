@@ -3,19 +3,20 @@ import { ValidationError } from '../utils/error';
 import { AuthService } from '../services/auth.service';
 import { AuthRepository } from '../repositories/auth.repository';
 import { generateToken } from '../utils';
-import { userProfileClient } from './user.client';
 import { RPCRequest } from '../messaging/rabbitmq';
 import { RabbitMQQueues, RPCPayloadTypes } from '../interfaces';
 const authService = new AuthService(new AuthRepository());
 const register = async (req: Request, res: Response, next: NextFunction) => {
-  const { role, email, password, mobileNumber, firstName, lastName } = req.body;
+  const { role, email, password, mobileNumber, firstName, lastName, username } =
+    req.body;
   if (
     !role ||
     !email ||
     !password ||
     !mobileNumber ||
     !firstName ||
-    !lastName
+    !lastName ||
+    !username
   ) {
     res.status(400).json({ error: 'Missing Fields' });
     return;
@@ -27,6 +28,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       password,
       role,
       mobileNumber,
+      username,
     });
     if (!message) {
       res.status(500).json({ error: 'Something went wrong' });
@@ -40,6 +42,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
           id: userId,
           firstName,
           lastName,
+          username,
           role,
         },
       });
